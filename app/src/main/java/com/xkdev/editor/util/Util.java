@@ -26,8 +26,6 @@ import java.io.IOException;
  */
 public class Util {
 
-    private static final String DIR_SD = "Editor/MyFiles";
-    private static final String TAG = "MyLogs" ;
 
     //Метод для открытия файла в режиме чтения
     public static void openFileReadSD(String filePath, Context context, TextView textView){

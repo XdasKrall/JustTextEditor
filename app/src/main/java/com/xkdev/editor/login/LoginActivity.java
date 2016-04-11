@@ -170,7 +170,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             Cursor cursor = getContentResolver().query(URI_CONTENT, null,
                     "email = '"
                             + mEmail + "'", null, null);;
-            if(cursor.moveToFirst()){
+            if(cursor != null && cursor.moveToFirst()){
 
                 if(mPassword.equals(cursor.getString(1))){
 

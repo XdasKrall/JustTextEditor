@@ -14,8 +14,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.xkdev.editor.login.LoginActivity;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -27,7 +25,7 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String DIR_SD = "Editor/MyFiles";
-    public static final int PICKFILE_CODE = 1;
+    public static final int PICK_FILE_CODE = 1;
     CheckBox chbRead;
     Intent intent;
     private EditText mETFileName;
@@ -141,12 +139,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_GET_CONTENT);
         intent.setType("file/*");
-        startActivityForResult(intent, PICKFILE_CODE);
+        startActivityForResult(intent, PICK_FILE_CODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode==PICKFILE_CODE){
+        if(requestCode== PICK_FILE_CODE){
             if(data!=null){
                 filePath = data.getData().getPath();
                 intent.putExtra("filepath", filePath);

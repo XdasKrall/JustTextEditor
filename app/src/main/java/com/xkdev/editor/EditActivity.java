@@ -20,11 +20,8 @@ import android.widget.Toast;
 import com.xkdev.editor.settings.SettingsActivity;
 import com.xkdev.editor.util.Util;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -35,12 +32,18 @@ public class EditActivity extends AppCompatActivity {
     private final static String DIR_SD = "Editor/MyFiles";
     String filePath;
     private EditText mEditText;
-    final static int PICKFILE_CODE = 1;
-    SharedPreferences sPref;
+    final static int PICK_FILE_CODE = 1;
+//    SharedPreferences sPref;
     EditText mETFileName;
     Context mContext;
 
     final String Logs = "MyLogs";
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        writeFileSD(filePath);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +58,6 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //Проверка - открывать ли файл при запуске
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         //Смена размера шрифта
@@ -113,7 +115,7 @@ public class EditActivity extends AppCompatActivity {
                 createFileSD();
                 return true;
             case R.id.action_settings:
-                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                Intent intent = new Intent(mContext, SettingsActivity.class);
                 startActivity(intent);
                 return true;
             default:
@@ -134,12 +136,19 @@ public class EditActivity extends AppCompatActivity {
             BufferedWriter bWriter = new BufferedWriter(new FileWriter(sdFile));
             bWriter.write(mEditText.getText().toString());
             bWriter.close();
-            Toast.makeText(getApplicationContext(), R.string.succes_write_SD + sdFile.getPath(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.succes_write_SD + sdFile.getPath(), Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, R.string.error_write_SD + e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        writeFileSD(filePath);
+    }
+
     //Метод для создания нового файла
     public void createFileSD(){
         mETFileName = new EditText(EditActivity.this);
@@ -167,13 +176,13 @@ public class EditActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_GET_CONTENT);
         intent.setType("file/*");
-        startActivityForResult(intent, PICKFILE_CODE);
+        startActivityForResult(intent, PICK_FILE_CODE);
 
     }
     //Метод для обработки выбора файла
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode==PICKFILE_CODE){
+        if(requestCode== PICK_FILE_CODE){
             if(data!=null){
                 filePath = data.getData().getPath();
                 Util.openFileEditSD(filePath, mContext, mEditText);
