@@ -16,8 +16,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,38 +36,88 @@ import java.io.IOException;
  */
 public class EditActivity extends AppCompatActivity {
     private final static String DIR_SD = "Editor/MyFiles";
+    private static final String TAG = "MyLogs";
+    String path;
     String filePath;
+    String titleActBar;
     private EditText mEditText;
     final static int PICK_FILE_CODE = 1;
 //    SharedPreferences sPref;
     EditText mETFileName;
     TextView mRead;
+
     Context mContext;
 
-    final String Logs = "MyLogs";
+    File file;
+    File[] filePaths;
+    String[] fileNames;
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        writeFileSD(filePath);
-    }
+    ListView listDrawer;
+
+    DrawerLayout drawerLayout;
+
+    final String Logs = "MyLogs";
+    SharedPreferences sp;
+
+    boolean readMode;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_layout);
         mContext = getApplicationContext();
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+
+
+        path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + DIR_SD;
+        file = new File(path);
+        filePaths = file.listFiles();
+        fileNames = new String[file.listFiles().length];
+
+        for(int i = 0; i < filePaths.length; i++){
+
+            fileNames[i] = filePaths[i].getName();
+        }
+
+        listDrawer = (ListView) findViewById(R.id.listDrawer);
+
+        listDrawer.setAdapter(new ArrayAdapter<>(mContext, R.layout.drawer_list_item, fileNames));
+
+        listDrawer.setOnItemClickListener(new DrawerItemClickListener());
+
+        sp = getPreferences(MODE_PRIVATE);
+
         mRead = (TextView) findViewById(R.id.tvRead);
         mRead.setVisibility(View.GONE);
+        readMode = sp.getBoolean("read mode", false);
+        Log.d(TAG, "onCreate: " + readMode);
+
         mEditText = (EditText) findViewById(R.id.etText);
         filePath = getIntent().getStringExtra("filepath");
+        titleActBar = filePath;
+        
+        getSupportActionBar().setTitle(titleActBar.replaceAll("/storage/emulated/0/Editor/MyFiles/", ""));
+        Log.d(TAG, "Filepath: " + filePath);
+
         Util.openFileEditSD(filePath, mContext, mEditText);
+        if(readMode){
+            mRead.setText(mEditText.getText().toString());
+            mEditText.setVisibility(View.GONE);
+            mRead.setVisibility(View.VISIBLE);
+        }
+        else{
+            mRead.setVisibility(View.GONE);
+            mEditText.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+         sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         //Смена размера шрифта
         float fSize = Float.parseFloat(sp.getString(getString(R.string.pref_size), "20"));
@@ -101,15 +153,7 @@ public class EditActivity extends AppCompatActivity {
         }
         mEditText.setTextColor(textColor);
 
-        if(sp.getBoolean(getString(R.string.pref_mode), false)){
-            mRead.setText(mEditText.getText().toString());
-            mEditText.setVisibility(View.GONE);
-            mRead.setVisibility(View.VISIBLE);
-        }
-        else{
-            mRead.setVisibility(View.GONE);
-            mEditText.setVisibility(View.VISIBLE);
-        }
+
     }
 
     @Override
@@ -123,6 +167,19 @@ public class EditActivity extends AppCompatActivity {
         switch(item.getItemId()){
             case R.id.action_open:
                 openFileManager();
+                return true;
+            case R.id.action_mode_read:
+                if(!readMode){
+                    mRead.setText(mEditText.getText().toString());
+                    mEditText.setVisibility(View.GONE);
+                    mRead.setVisibility(View.VISIBLE);
+                    readMode = true;
+                }
+                else{
+                    mRead.setVisibility(View.GONE);
+                    mEditText.setVisibility(View.VISIBLE);
+                    readMode = false;
+                }
                 return true;
             case R.id.action_save:
                 if(filePath != null)
@@ -158,6 +215,29 @@ public class EditActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, R.string.error_write_SD + e.toString(), Toast.LENGTH_SHORT).show();
         }
+        filePaths = file.listFiles();
+        fileNames = new String[file.listFiles().length];
+
+        for(int i = 0; i < filePaths.length; i++){
+
+            fileNames[i] = filePaths[i].getName();
+            Log.d(TAG, "Iteration: " + i);
+        }
+
+        listDrawer = (ListView) findViewById(R.id.listDrawer);
+
+        listDrawer.setAdapter(new ArrayAdapter<>(mContext, R.layout.drawer_list_item, fileNames));
+    }
+
+    @Override
+    protected void onDestroy() {
+        sp = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putBoolean("read mode", readMode);
+        ed.commit();
+        Log.d(TAG, "onDestroy: " + readMode);
+        super.onDestroy();
+
     }
 
     @Override
@@ -210,6 +290,17 @@ public class EditActivity extends AppCompatActivity {
             return;
         if(resultCode == RESULT_CANCELED){
             return;
+        }
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener{
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            writeFileSD(filePath);
+            filePath = filePaths[position].getPath();
+            Util.openFileEditSD(filePaths[position].getPath(), mContext, mEditText);
+            getSupportActionBar().setTitle(filePaths[position].getName());
+            drawerLayout.closeDrawer(listDrawer);
         }
     }
 }

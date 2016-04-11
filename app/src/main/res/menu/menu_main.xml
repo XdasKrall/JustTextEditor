@@ -8,6 +8,12 @@
         app:showAsAction="ifRoom|withText"
         android:icon="@drawable/open_icon"/>
     <item
+        android:id="@+id/action_mode_read"
+        android:title = "@string/action_read"
+        app:showAsAction="always"
+        android:icon="@android:drawable/ic_menu_view"/>
+
+    <item
         android:id="@+id/action_save"
         android:title="@string/action_save"
         app:showAsAction="ifRoom|withText"

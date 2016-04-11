@@ -51,6 +51,7 @@
     <string name="incorrect_password">Неверный пароль</string>
     <string name="incorrect_email">Некорректно введен адресс почты</string>
     <string name="invalid_password">Пароль не соответствует требованиям</string>
+    <string name="action_read">Чтение</string>
     <string-array name="text_style">
         <item>Обычный</item>
         <item>Полужирный</item>
@@ -62,5 +63,15 @@
         <item>Красный</item>
         <item>Зеленый</item>
         <item>Синий</item>
+    </string-array>
+    <string-array name="file_names">
+        <item>File 1</item>
+        <item>File 2</item>
+        <item>File 3</item>
+        <item>File 5</item>
+        <item>File 6</item>
+        <item>File 7</item>
+        <item>File 8</item>
+        <item>File 9</item>
     </string-array>
 </resources>
