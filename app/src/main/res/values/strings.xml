@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">Editor</string>
+    <string name="action_save">Сохранить</string>
+    <string name="action_open">Открыть</string>
+    <string name="action_create">Создать</string>
+    <string name="action_settings">Настройки</string>
+    <string name="error_write_SD">Извините! Файл не записан на SD: </string>
+    <string name="succes_write_SD">Файл записан на SD: </string>
+    <string name="pref_openmode">Режим октрытия</string>
+    <string name="pref_summary_chb">Открывать файл при запуске приложения</string>
+    <string name="pref_title_chb">Открыть</string>
+    <string name="pref_color">Цвет</string>
+    <string name="pref_color_black">Черный</string>
+    <string name="pref_color_red">Красный</string>
+    <string name="pref_color_green">Зеленый</string>
+    <string name="pref_color_blue">Синий</string>
+    <string name="pref_size">Размер</string>
+    <string name="pref_style">Стиль</string>
+    <string name="pref_style_regular">Нормальный</string>
+    <string name="pref_style_bold">Полужирный</string>
+    <string name="pref_style_italic">Курсив</string>
+    <string name="pref_edit_dialog_title">Введите размер шрифта (от 10 до 32)</string>
+    <string name="pref_edit_summary">Устанавливает новый размер шрифта</string>
+    <string name="pref_edit_title">Размер шрифта</string>
+    <string name="pref_style_list_dialog_title">Выберите стиль для шрифта</string>
+    <string name="pref_style_list_summary">Устанавливает стиль для шрифта</string>
+    <string name="pref_style_list_title">Стиль для шрифта</string>
+    <string name="pref_color_list_dialog_title">Выберите цвет для шрифта</string>
+    <string name="pref_color_list_summary">Устанавливает цвет для шрифта</string>
+    <string name="pref_color_list_title">Цвет для шрифта</string>
+    <string name="action_exit">Выйти</string>
+    <string name="chb_read">Режим чтения</string>
+    <string-array name="text_style">
+        <item>Обычный</item>
+        <item>Полужирный</item>
+        <item>Курсив</item>
+        <item>Полужирный+Курсив</item>
+    </string-array>
+    <string-array name="text_color">
+        <item>Черный</item>
+        <item>Красный</item>
+        <item>Зеленый</item>
+        <item>Синий</item>
+    </string-array>
+</resources>
