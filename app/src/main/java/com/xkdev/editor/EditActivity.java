@@ -1,6 +1,7 @@
 package com.xkdev.editor;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.xkdev.editor.settings.SettingsActivity;
+import com.xkdev.editor.util.Util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -29,12 +31,14 @@ import java.io.IOException;
 /**
  * Created by user on 06.04.2016.
  */
-public class EditActivity extends AppCompatActivity { private final static String DIR_SD = "Editor/MyFiles";
+public class EditActivity extends AppCompatActivity {
+    private final static String DIR_SD = "Editor/MyFiles";
     String filePath;
     private EditText mEditText;
     final static int PICKFILE_CODE = 1;
     SharedPreferences sPref;
     EditText mETFileName;
+    Context mContext;
 
     final String Logs = "MyLogs";
 
@@ -42,9 +46,10 @@ public class EditActivity extends AppCompatActivity { private final static Strin
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_layout);
+        mContext = getApplicationContext();
         mEditText = (EditText) findViewById(R.id.etText);
         filePath = getIntent().getStringExtra("filepath");
-        openFileSD(filePath);
+        Util.openFileEditSD(filePath, mContext, mEditText);
     }
 
     @Override
@@ -116,32 +121,6 @@ public class EditActivity extends AppCompatActivity { private final static Strin
         }
     }
 
-    //Метод для октрытия файла
-    public void openFileSD(String filePath){
-
-        if(!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
-            return;
-        }
-
-        File sdFile = new File(filePath);
-
-        try{
-            BufferedReader bfReader = new BufferedReader(new FileReader(sdFile));
-            String str;
-            StringBuilder sBuilder = new StringBuilder();
-            while((str = bfReader.readLine()) != null){
-                sBuilder.append(str + "\n");
-            }
-            mEditText.setText(sBuilder.toString());
-            Toast.makeText(this, "Открыто: " + filePath, Toast.LENGTH_SHORT).show();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
-        }
-    }
 
     //Метод для записи файла на sd card
     public void writeFileSD(String filePath){
@@ -155,10 +134,6 @@ public class EditActivity extends AppCompatActivity { private final static Strin
             BufferedWriter bWriter = new BufferedWriter(new FileWriter(sdFile));
             bWriter.write(mEditText.getText().toString());
             bWriter.close();
-            sPref = getPreferences(MODE_PRIVATE);
-            SharedPreferences.Editor ed = sPref.edit();
-            ed.putString("file",filePath);
-            ed.commit();
             Toast.makeText(getApplicationContext(), R.string.succes_write_SD + sdFile.getPath(), Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -201,7 +176,7 @@ public class EditActivity extends AppCompatActivity { private final static Strin
         if(requestCode==PICKFILE_CODE){
             if(data!=null){
                 filePath = data.getData().getPath();
-                openFileSD(filePath);
+                Util.openFileEditSD(filePath, mContext, mEditText);
             }
             else return;
         }

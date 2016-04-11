@@ -27,7 +27,7 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String DIR_SD = "Editor/MyFiles";
-    private static final int PICKFILE_CODE = 1;
+    public static final int PICKFILE_CODE = 1;
     CheckBox chbRead;
     Intent intent;
     private EditText mETFileName;
@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
 
-        Intent iLogin = new Intent(this, LoginActivity.class);
-        startActivity(iLogin);
+      //  Intent iLogin = new Intent(this, LoginActivity.class);
+      //    startActivity(iLogin);
 
         btnCreate = (Button) findViewById(R.id.btnCreate);
         btnOpen = (Button) findViewById(R.id.btnOpen);
@@ -70,11 +70,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG, "onClickOpen");
                 if(!chbRead.isChecked()){
                     intent.setClass(this, EditActivity.class);
-
                 }
                 else{
                     intent.setClass(this, ReadActivity.class);
-
                 }
                 break;
 
@@ -128,11 +126,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             BufferedWriter bWriter = new BufferedWriter(new FileWriter(sdFile));
             bWriter.write("");
             bWriter.close();
-            sPref = getPreferences(MODE_PRIVATE);
-            SharedPreferences.Editor ed = sPref.edit();
-            ed.putString("file",filePath);
-            ed.commit();
             Toast.makeText(getApplicationContext(), R.string.succes_write_SD + sdFile.getPath(), Toast.LENGTH_SHORT).show();
+            intent.setClass(this, EditActivity.class);
+            intent.putExtra("filepath", filePath);
+            startActivity(intent);
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, R.string.error_write_SD + e.toString(), Toast.LENGTH_SHORT).show();

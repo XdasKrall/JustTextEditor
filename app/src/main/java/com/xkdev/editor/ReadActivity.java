@@ -1,10 +1,21 @@
 package com.xkdev.editor;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.xkdev.editor.settings.SettingsActivity;
+import com.xkdev.editor.util.Util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,42 +28,108 @@ import java.io.IOException;
  */
 public class ReadActivity extends AppCompatActivity {
 
-    TextView tvRead;
+    private static final int PICKFILE_CODE = 1;
+    TextView mRead;
     String filePath;
+    Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.read_layout);
 
-        tvRead = (TextView) findViewById(R.id.tvReadView);
+        mContext = getApplicationContext();
+
+        mRead = (TextView) findViewById(R.id.tvReadView);
 
         filePath = getIntent().getStringExtra("filepath");
-        openFileSD(filePath);
+        Util.openFileReadSD(filePath, mContext, mRead);
     }
-    public void openFileSD(String filePath){
 
-        if(!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+    //Метод для открытия файлового менеджера
+    public void openFileManager()
+    {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setType("file/*");
+        startActivityForResult(intent, PICKFILE_CODE);
+
+    }
+    //Метод для обработки выбора файла
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==PICKFILE_CODE){
+            if(data!=null){
+                filePath = data.getData().getPath();
+                Util.openFileReadSD(filePath, mContext, mRead);
+            }
+            else return;
+        }
+        else
+            return;
+        if(resultCode == RESULT_CANCELED){
             return;
         }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //Проверка - открывать ли файл при запуске
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-        File sdFile = new File(filePath);
+        //Смена размера шрифта
+        float fSize = Float.parseFloat(sp.getString(getString(R.string.pref_size), "20"));
+        mRead.setTextSize(fSize);
 
-        try{
-            BufferedReader bfReader = new BufferedReader(new FileReader(sdFile));
-            String str;
-            StringBuilder sBuilder = new StringBuilder();
-            while((str = bfReader.readLine()) != null){
-                sBuilder.append(str + "\n");
-            }
-            tvRead.setText(sBuilder.toString());
-            Toast.makeText(this, "Открыто: " + filePath, Toast.LENGTH_SHORT).show();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+        //Смена стиля шрифта
+        String regular = sp.getString(getString(R.string.pref_style), "");
+        int typeface = Typeface.NORMAL;
+
+        if(regular.contains(getString(R.string.pref_style_bold))){
+            typeface += Typeface.BOLD;
+        }
+        if(regular.contains(getString(R.string.pref_style_italic))){
+            typeface += Typeface.ITALIC;
+        }
+        mRead.setTypeface(null, typeface);
+
+        //Смена цвета текста
+        String sColor = sp.getString(getString(R.string.pref_color), "");
+        int textColor = Color.BLACK;
+
+        if(sColor.contains(getString(R.string.pref_color_black))){
+            textColor = Color.BLACK;
+        }
+        else if(sColor.contains(getString(R.string.pref_color_blue))){
+            textColor = Color.BLUE;
+        }
+        else if(sColor.contains(getString(R.string.pref_color_green))){
+            textColor = Color.GREEN;
+        }
+        else if(sColor.contains(getString(R.string.pref_color_red))){
+            textColor = Color.RED;
+        }
+        mRead.setTextColor(textColor);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_read, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.action_open:
+                openFileManager();
+                return true;
+            case R.id.action_settings:
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return true;
         }
     }
 }
