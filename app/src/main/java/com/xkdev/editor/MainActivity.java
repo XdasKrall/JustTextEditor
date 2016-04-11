@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Метод для создания нового файла
     public void createFileSD(){
         mETFileName = new EditText(MainActivity.this);
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.create_text_file);
         builder.setView(mETFileName);
         builder.setCancelable(true);

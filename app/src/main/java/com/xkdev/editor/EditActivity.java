@@ -38,7 +38,7 @@ public class EditActivity extends AppCompatActivity {
     private final static String DIR_SD = "Editor/MyFiles";
     private static final String TAG = "MyLogs";
     String path;
-    String filePath;
+    String mFilePath;
     String titleActBar;
     private EditText mEditText;
     final static int PICK_FILE_CODE = 1;
@@ -96,13 +96,13 @@ public class EditActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: " + readMode);
 
         mEditText = (EditText) findViewById(R.id.etText);
-        filePath = getIntent().getStringExtra("filepath");
-        titleActBar = filePath;
-        
-        getSupportActionBar().setTitle(titleActBar.replaceAll("/storage/emulated/0/Editor/MyFiles/", ""));
-        Log.d(TAG, "Filepath: " + filePath);
+        mFilePath = getIntent().getStringExtra("filepath");
+        titleActBar = mFilePath;
 
-        Util.openFileEditSD(filePath, mContext, mEditText);
+        getSupportActionBar().setTitle(titleActBar.replaceAll("/storage/emulated/0/Editor/MyFiles/", ""));
+        Log.d(TAG, "Filepath: " + mFilePath);
+
+        Util.openFileEditSD(mFilePath, mContext, mEditText);
         if(readMode){
             mRead.setText(mEditText.getText().toString());
             mEditText.setVisibility(View.GONE);
@@ -182,8 +182,8 @@ public class EditActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.action_save:
-                if(filePath != null)
-                    writeFileSD(filePath);
+                if(mFilePath != null)
+                    writeFileSD(mFilePath);
                 return true;
             case R.id.action_create:
                 createFileSD();
@@ -221,7 +221,6 @@ public class EditActivity extends AppCompatActivity {
         for(int i = 0; i < filePaths.length; i++){
 
             fileNames[i] = filePaths[i].getName();
-            Log.d(TAG, "Iteration: " + i);
         }
 
         listDrawer = (ListView) findViewById(R.id.listDrawer);
@@ -243,28 +242,40 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        writeFileSD(filePath);
+        writeFileSD(mFilePath);
     }
 
     //Метод для создания нового файла
     public void createFileSD(){
-        mETFileName = new EditText(EditActivity.this);
+        mETFileName = new EditText(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Введите имя файла");
+        builder.setMessage(R.string.create_text_file);
         builder.setView(mETFileName);
+        builder.setCancelable(true);
+        builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                return;
+            }
+        });
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (mETFileName != null){
+                if (mETFileName != null) {
                     String fileName = mETFileName.getText().toString() + ".txt";
                     File sdPath = Environment.getExternalStorageDirectory();
                     sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
-                    writeFileSD(sdPath + "/" + fileName);
-
+                    sdPath.mkdirs();
+                    writeEmptyFileSD(sdPath + "/" + fileName);
+                } else {
+                    Toast
+                            .makeText(getApplicationContext(), R.string.create_text_file, Toast.LENGTH_SHORT)
+                            .show();
+                    createFileSD();
                 }
             }
         });
-        builder.setCancelable(true);
+
         builder.show();
     }
     //Метод для открытия файлового менеджера
@@ -281,8 +292,8 @@ public class EditActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode== PICK_FILE_CODE){
             if(data!=null){
-                filePath = data.getData().getPath();
-                Util.openFileEditSD(filePath, mContext, mEditText);
+                mFilePath = data.getData().getPath();
+                Util.openFileEditSD(mFilePath, mContext, mEditText);
             }
             else return;
         }
@@ -293,11 +304,44 @@ public class EditActivity extends AppCompatActivity {
         }
     }
 
+    public void writeEmptyFileSD(String filePath){
+        if(!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+            Log.d(TAG, getString(R.string.sd_not_available) + Environment.getExternalStorageState());
+            return;
+        }
+        File sdFile = new File(filePath);
+
+        try{
+            BufferedWriter bWriter = new BufferedWriter(new FileWriter(sdFile));
+            bWriter.write("");
+            bWriter.close();
+            Toast.makeText(getApplicationContext(), R.string.succes_write_SD + sdFile.getPath(), Toast.LENGTH_SHORT).show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, R.string.error_write_SD + e.toString(), Toast.LENGTH_SHORT).show();
+        }
+        filePaths = file.listFiles();
+        fileNames = new String[file.listFiles().length];
+
+        for(int i = 0; i < filePaths.length; i++){
+
+            fileNames[i] = filePaths[i].getName();
+        }
+
+        listDrawer = (ListView) findViewById(R.id.listDrawer);
+        mFilePath = filePath;
+        titleActBar = filePath;
+        listDrawer.setAdapter(new ArrayAdapter<>(mContext, R.layout.drawer_list_item, fileNames));
+        Util.openFileEditSD(mFilePath, mContext, mEditText);
+        getSupportActionBar().setTitle(titleActBar.replaceAll("/storage/emulated/0/Editor/MyFiles/", ""));
+    }
+
     private class DrawerItemClickListener implements ListView.OnItemClickListener{
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            writeFileSD(filePath);
-            filePath = filePaths[position].getPath();
+            writeFileSD(mFilePath);
+            mFilePath = filePaths[position].getPath();
             Util.openFileEditSD(filePaths[position].getPath(), mContext, mEditText);
             getSupportActionBar().setTitle(filePaths[position].getName());
             drawerLayout.closeDrawer(listDrawer);
