@@ -10,11 +10,15 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xkdev.editor.settings.SettingsActivity;
@@ -35,6 +39,7 @@ public class EditActivity extends AppCompatActivity {
     final static int PICK_FILE_CODE = 1;
 //    SharedPreferences sPref;
     EditText mETFileName;
+    TextView mRead;
     Context mContext;
 
     final String Logs = "MyLogs";
@@ -50,6 +55,8 @@ public class EditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_layout);
         mContext = getApplicationContext();
+        mRead = (TextView) findViewById(R.id.tvRead);
+        mRead.setVisibility(View.GONE);
         mEditText = (EditText) findViewById(R.id.etText);
         filePath = getIntent().getStringExtra("filepath");
         Util.openFileEditSD(filePath, mContext, mEditText);
@@ -93,6 +100,16 @@ public class EditActivity extends AppCompatActivity {
             textColor = Color.RED;
         }
         mEditText.setTextColor(textColor);
+
+        if(sp.getBoolean(getString(R.string.pref_mode), false)){
+            mRead.setText(mEditText.getText().toString());
+            mEditText.setVisibility(View.GONE);
+            mRead.setVisibility(View.VISIBLE);
+        }
+        else{
+            mRead.setVisibility(View.GONE);
+            mEditText.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

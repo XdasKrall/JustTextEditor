@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String DIR_SD = "Editor/MyFiles";
     public static final int PICK_FILE_CODE = 1;
-    CheckBox chbRead;
     Intent intent;
     private EditText mETFileName;
     private SharedPreferences sPref;
@@ -50,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnOpen.setOnClickListener(this);
         btnExit.setOnClickListener(this);
 
-        chbRead = (CheckBox) findViewById(R.id.chbRead);
 
         intent = new Intent();
     }
@@ -66,14 +64,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnOpen:
                 openFileManager();
                 Log.d(TAG, "onClickOpen");
-                if(!chbRead.isChecked()){
                     intent.setClass(this, EditActivity.class);
-                }
-                else{
-                    intent.setClass(this, ReadActivity.class);
-                }
-                break;
 
+                break;
             case R.id.btnExit:
                 this.finish();
                 break;

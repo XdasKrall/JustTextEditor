@@ -6,9 +6,9 @@
     <string name="action_settings">Настройки</string>
     <string name="error_write_SD">Извините! Файл не записан на SD: </string>
     <string name="succes_write_SD">Файл записан на SD: </string>
-    <string name="pref_openmode">Режим октрытия</string>
-    <string name="pref_summary_chb">Открывать файл при запуске приложения</string>
-    <string name="pref_title_chb">Открыть</string>
+    <string name="pref_mode">Режим октрытия</string>
+    <string name="pref_summary_chb">Перейти к режиму чтения</string>
+    <string name="pref_title_chb">Перейти</string>
     <string name="pref_color">Цвет</string>
     <string name="pref_color_black">Черный</string>
     <string name="pref_color_red">Красный</string>
@@ -29,7 +29,6 @@
     <string name="pref_color_list_summary">Устанавливает цвет для шрифта</string>
     <string name="pref_color_list_title">Цвет для шрифта</string>
     <string name="action_exit">Выйти</string>
-    <string name="chb_read">Режим чтения</string>
     <string name="create_text_file">Введите имя файла</string>
     <string name="sd_not_available">"SD карта не доступна: "</string>
     <string name="dialog_message_registration">Этот аккаунт не зарегистрирован, вы хотите его зарегистрировать</string>

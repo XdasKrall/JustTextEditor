@@ -6,6 +6,11 @@
         android:id="@+id/etText"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="left|top"/>
+        android:gravity="left|top"
+        android:inputType="text" />
+    <TextView
+        android:id="@+id/tvRead"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

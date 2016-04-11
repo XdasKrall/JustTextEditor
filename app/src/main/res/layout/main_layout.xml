@@ -17,12 +17,6 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/btnCreate"
         android:layout_height="wrap_content" />
-    <CheckBox
-        android:id="@+id/chbRead"
-        android:text="@string/chb_read"
-        android:layout_below="@+id/btnExit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
     <Button
         android:id="@+id/btnExit"
         android:text="@string/action_exit"
