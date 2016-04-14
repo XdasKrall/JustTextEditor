@@ -2,6 +2,7 @@
     package="com.xkdev.editor">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -23,6 +24,7 @@
         <activity android:name=".login.LoginActivity"/>
         <activity android:name=".settings.SettingsActivity"
             android:label="@string/app_name"/>
+        <activity android:name=".SendEmailActivity"/>
     </application>
 
 </manifest>

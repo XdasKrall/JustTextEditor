@@ -30,27 +30,31 @@ import java.util.List;
  * Created by dfomichev on 08.04.2016.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-    //private static final String[] CREDENTIALS = {"foo@example.com:hello", "bee@beezmail.com:world"};
+
+    //Uri Провайдера
+    final Uri URI_CONTENT = Uri.parse("content://MyDB/users");
     private static final String TAG = "MyLogs";
 
     private static final int CODE_EMAIL = 1;
     private static final int CODE_PASSWORD = 2;
-
+//Параметры аутентификации
     private AutoCompleteTextView mEmailView;
     private EditText mPassword;
+
     private UserTask user = null;
-    final Uri URI_CONTENT = Uri.parse("content://MyDB/users");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mylogin_layout);
-
+        //Инициализация Loader
         getLoaderManager().initLoader(0, null, this);
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.autoTextView);
         mPassword = (EditText) findViewById(R.id.etPassword);
         Button btnSignIn = (Button) findViewById(R.id.btnSignIn);
+        //Отправка введенных данных на проверку корретности ввода
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,7 +70,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     private boolean emailIsValid(String email){
         return email.contains("@");
     }
-
+//Проверка корректности ввода данных
     private void loginAttempt(){
         if(user != null){
             return;
@@ -93,6 +97,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        //Получение массива электронных адресов из БД
      List<String> emails = new ArrayList<>();
         data.moveToFirst();
         while(!data.isAfterLast()){
@@ -103,7 +108,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         }
         addEmailsToAutoComplete(emails);
     }
-
+//Автозаполнение формы для почты, при вводе первых символов
     private void addEmailsToAutoComplete(List<String> emails) {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, emails);
         mEmailView.setAdapter(adapter);
@@ -114,7 +119,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
-
+//Аутентификация
     private class UserTask extends AsyncTask<Void, Void, Boolean>{
 
         private String mEmail;
@@ -135,6 +140,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                 Log.d(TAG, "onPostExecute");
                 finish();
             }
+            //Если введеной почты нет в базе - предложение зарегистрировать
             else{if(!inCorrectPassword){
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle(R.string.registration_dialog_title);
@@ -156,6 +162,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                     }
                 }).show();
             }
+            //Если почта есть, но пароль не верный - вывод сообщения об этом
                 else {
                 Toast.makeText(context, R.string.incorrect_password, Toast.LENGTH_SHORT).show();
             }
@@ -165,8 +172,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         @Override
         protected Boolean doInBackground(Void... params) {
 
+            //Проверка соответствия почты и пароля
             inCorrectPassword = false;
-
             Cursor cursor = getContentResolver().query(URI_CONTENT, null,
                     "email = '"
                             + mEmail + "'", null, null);;

@@ -24,14 +24,13 @@ import java.io.IOException;
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String DIR_SD = "Editor/MyFiles";
-    public static final int PICK_FILE_CODE = 1;
+    private static final String DIR_SD = "Editor/MyFiles";//Каталог, где будут храниться все созданные файлы
+    public static final int PICK_FILE_CODE = 1;//Реквест код для выбора файла, при открытии из файлового менеджера
     Intent intent;
-    private EditText mETFileName;
-    private SharedPreferences sPref;
+
+    private EditText mETFileName;//Имя при создании нового файла
     private String TAG = "MyLogs";
-    private String filePath;
-    Button btnCreate, btnOpen, btnExit;
+    Button btnCreate, btnOpen, btnExit, btnSendEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnCreate.setOnClickListener(this);
         btnOpen.setOnClickListener(this);
         btnExit.setOnClickListener(this);
+
+        btnSendEmail = (Button) findViewById(R.id.btnSendEmail);
+        btnSendEmail.setOnClickListener(this);
 
 
         intent = new Intent();
@@ -70,8 +72,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnExit:
                 this.finish();
                 break;
+            case R.id.btnSendEmail:               //Отправка сообщения по почте
+                Intent intent = new Intent(this, SendEmailActivity.class);
+                startActivity(intent);
+                break;
         }
     }
+
     //Метод для создания нового файла
     public void createFileSD(){
         mETFileName = new EditText(MainActivity.this);
@@ -134,13 +141,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent.setType("file/*");
         startActivityForResult(intent, PICK_FILE_CODE);
     }
-
+//Открытие экрана редактирования при выборе файла, в файловом менеджере (txt)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode== PICK_FILE_CODE){
             if(data!=null){
-                filePath = data.getData().getPath();
-                intent.putExtra("filepath", filePath);
+                intent.putExtra("filepath", data.getData().getPath());
                 startActivity(intent);
             }
             else return;

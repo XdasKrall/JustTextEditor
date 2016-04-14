@@ -36,6 +36,7 @@ public class Util {
                 sBuilder.append(str + "\n");
             }
             editText.setText(sBuilder.toString());
+            bfReader.close();
 
             Toast.makeText(context, "Открыто: " + filePath, Toast.LENGTH_SHORT).show();
         } catch (FileNotFoundException e) {

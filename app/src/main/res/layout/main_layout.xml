@@ -18,10 +18,17 @@
         android:layout_below="@+id/btnCreate"
         android:layout_height="wrap_content" />
     <Button
+        android:id="@+id/btnSendEmail"
+        android:text="@string/action_send_email"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/btnOpen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
         android:id="@+id/btnExit"
         android:text="@string/action_exit"
         android:layout_centerHorizontal="true"
         android:layout_width="match_parent"
-        android:layout_below="@+id/btnOpen"
+        android:layout_below="@+id/btnSendEmail"
         android:layout_height="wrap_content" />
 </RelativeLayout>

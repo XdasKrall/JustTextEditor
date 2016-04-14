@@ -52,6 +52,7 @@
     <string name="incorrect_email">Некорректно введен адресс почты</string>
     <string name="invalid_password">Пароль не соответствует требованиям</string>
     <string name="action_read">Чтение</string>
+    <string name="action_send_email">Отправить сообщение</string>
     <string-array name="text_style">
         <item>Обычный</item>
         <item>Полужирный</item>

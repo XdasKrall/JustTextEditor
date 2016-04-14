@@ -16,6 +16,7 @@ import android.util.Log;
  * Created by dfomichev on 08.04.2016.
  */
 public class LoginProvider extends ContentProvider {
+    //Параметры БД
     private static final String DB_NAME = "users";
     private static final int DB_VERSION = 1;
     private static final String DB_ID = "_id";
@@ -26,6 +27,7 @@ public class LoginProvider extends ContentProvider {
             + DB_COLUMN_PASSWORD + " text" + ")";
     private static final String TAG = "MyLogs";
 
+    //Параметры Uri
     static final String AUTHORITY = "MyDB";
     static final String PATH = "users";
     static final Uri CONTENT_URI = Uri.parse("content://"+AUTHORITY+"/"+PATH);
@@ -33,8 +35,8 @@ public class LoginProvider extends ContentProvider {
     static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd" + AUTHORITY + "." + PATH;
     static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd" + AUTHORITY + "." + PATH;
 
-    static final int URI_USERS = 1;
-    static final int URI_USER_ID = 2;
+    static final int URI_USERS = 1;//Список пользователей
+    static final int URI_USER_ID = 2;//Конкретный пользователь
 
     private static final UriMatcher uriMatcher;
     static {
@@ -44,7 +46,6 @@ public class LoginProvider extends ContentProvider {
     }
 
     DBHelper dbHelper;
-    SQLiteDatabase db;
 
     @Override
     public boolean onCreate() {
@@ -56,8 +57,7 @@ public class LoginProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteDatabase sql = dbHelper.getReadableDatabase();
-        Cursor cursor = sql.query(DB_NAME, null, selection, null, null, null, null);
-        return cursor;
+        return sql.query(DB_NAME, null, selection, null, null, null, null);
     }
 
     @Nullable
@@ -71,8 +71,7 @@ public class LoginProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         SQLiteDatabase sql = dbHelper.getWritableDatabase();
        long rowID =  sql.insert(DB_NAME, null, values);
-        Uri resultUri = ContentUris.withAppendedId(CONTENT_URI, rowID);
-        return resultUri;
+        return ContentUris.withAppendedId(CONTENT_URI, rowID);
     }
 
     @Override
@@ -85,6 +84,7 @@ public class LoginProvider extends ContentProvider {
         return 0;
     }
 
+    //Создание БД
     private class DBHelper extends SQLiteOpenHelper {
 
 
@@ -105,22 +105,6 @@ public class LoginProvider extends ContentProvider {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
     }
-     /*
-    public void insertUser(String email, String password){
-        SQLiteDatabase sql = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("email", email);
-        cv.put("password", password);
-        sql.insert(DB_NAME, null, cv);
     }
-
-    public Cursor getUser(String email){
-        String query = "Select _id, password from users where email = '" + email + "'";
-        SQLiteDatabase sql = this.getReadableDatabase();
-        Cursor cursor = sql.rawQuery(query, null);
-        return cursor;
-    }*/
-}
 }
