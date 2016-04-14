@@ -177,6 +177,7 @@ public class EditActivity extends AppCompatActivity {
         //Смена размера шрифта
         float fSize = Float.parseFloat(sp.getString(getString(R.string.pref_size), "20"));
         mEditText.setTextSize(fSize);
+        mRead.setTextSize(fSize);
 
         //Смена стиля шрифта
         String regular = sp.getString(getString(R.string.pref_style), "");
@@ -189,6 +190,7 @@ public class EditActivity extends AppCompatActivity {
             typeface += Typeface.ITALIC;
         }
         mEditText.setTypeface(null, typeface);
+        mRead.setTypeface(null, typeface);
 
         //Смена цвета текста
         String sColor = sp.getString(getString(R.string.pref_color), "");
@@ -207,6 +209,7 @@ public class EditActivity extends AppCompatActivity {
             textColor = Color.RED;
         }
         mEditText.setTextColor(textColor);
+        mRead.setTextColor(textColor);
 
 
     }
@@ -385,20 +388,22 @@ public class EditActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(titleActBar.replaceAll("/storage/emulated/0/Editor/MyFiles/", ""));
     }
 //Метод для получения имен файлов и вывода их в listDrawer
-    private void getFilesNames(){
+    private void getFilesNames() {
         //Получение списка файлов в директории
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + DIR_SD);
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + DIR_SD);
         filePaths = file.listFiles();
 
-        fileNames = new String[file.listFiles().length];
+
+            fileNames = new String[filePaths.length];
 //Наполнение массива именами файлов
-        for(int i = 0; i < filePaths.length; i++){
+            for (int i = 0; i < filePaths.length; i++) {
 
-            fileNames[i] = filePaths[i].getName();
-        }
+                fileNames[i] = filePaths[i].getName();
+            }
 
-        //Обновление имен файлов в адаптере
-        listDrawer.setAdapter(new ArrayAdapter<>(mContext, R.layout.drawer_list_item, fileNames));
+            //Обновление имен файлов в адаптере
+            listDrawer.setAdapter(new ArrayAdapter<>(mContext, R.layout.drawer_list_item, fileNames));
+
     }
 //Обработка нажатий на элементы listDrawer
     private class DrawerItemClickListener implements ListView.OnItemClickListener{
