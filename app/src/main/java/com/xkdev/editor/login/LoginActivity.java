@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
     private static final int CODE_EMAIL = 1;
     private static final int CODE_PASSWORD = 2;
-//Параметры аутентификации
+    //Параметры аутентификации
     private AutoCompleteTextView mEmailView;
     private EditText mPassword;
 

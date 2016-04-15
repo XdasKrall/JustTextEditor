@@ -166,6 +166,7 @@ public class EditActivity extends AppCompatActivity {
         else{
             mRead.setVisibility(View.GONE);
             mEditText.setVisibility(View.VISIBLE);
+            mEditText.setFocusable(true);
         }
     }
 
@@ -236,6 +237,7 @@ public class EditActivity extends AppCompatActivity {
                 else{
                     mRead.setVisibility(View.GONE);
                     mEditText.setVisibility(View.VISIBLE);
+                    mEditText.setFocusable(true);
                     readMode = false;
                 }
                 return true;
