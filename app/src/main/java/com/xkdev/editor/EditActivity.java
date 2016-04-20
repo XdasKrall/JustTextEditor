@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,6 +63,8 @@ public class EditActivity extends AppCompatActivity {
 
     boolean readMode;//Режим чтения
     boolean exitFromRemove;//Выход из активити, при удалении последнего оставшегося файла
+
+    ImageView imgText;
 
 
     @Override
@@ -141,6 +144,14 @@ public class EditActivity extends AppCompatActivity {
 
         sp = getPreferences(MODE_PRIVATE);
 
+        imgText = (ImageView) findViewById(R.id.imgText);
+        imgText.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                return false;
+            }
+        });
         mRead = (TextView) findViewById(R.id.tvRead);
         readMode = sp.getBoolean("read mode", false);
         Log.d(TAG, "onCreate: " + readMode);
