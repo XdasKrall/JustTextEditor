@@ -1,4 +1,4 @@
-package com.xkdev.editor.settings;
+package com.xkdev.justtexteditor.settings;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;

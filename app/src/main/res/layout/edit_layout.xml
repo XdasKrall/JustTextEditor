@@ -11,18 +11,16 @@
 
     <EditText
         android:id="@+id/etText"
-        android:layout_marginTop="200dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="left|top"
-        android:inputType="text" />
+        android:gravity="start|top"
+        android:inputType="textMultiLine" />
 
     <TextView
         android:id="@+id/tvRead"
-        android:layout_marginTop="200dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal|top" />
+        android:layout_gravity="start|top" />
 
     <ImageView
         android:id="@+id/imgText"

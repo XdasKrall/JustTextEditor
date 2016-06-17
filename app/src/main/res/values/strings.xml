@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">Editor</string>
+    <string name="app_name">JustTextEditor</string>
     <string name="action_save">Сохранить</string>
     <string name="action_open">Открыть</string>
     <string name="action_create">Создать</string>
     <string name="action_settings">Настройки</string>
-    <string name="error_write_SD">Извините! Файл не записан на SD: </string>
-    <string name="succes_write_SD">Файл записан на SD: </string>
+    <string name="error_write_SD">Извините! Файл не сохранен: </string>
+    <string name="success_write_SD">Файл записан на SD: </string>
     <string name="pref_mode">Режим октрытия</string>
     <string name="pref_summary_chb">Перейти к режиму чтения</string>
     <string name="pref_title_chb">Перейти</string>
@@ -31,7 +31,7 @@
     <string name="action_exit">Выйти</string>
     <string name="create_text_file">Введите имя файла</string>
     <string name="sd_not_available">"SD карта не доступна: "</string>
-    <string name="dialog_message_registration">Этот аккаунт не зарегистрирован, вы хотите его зарегистрировать</string>
+    <string name="dialog_message_registration">Этот аккаунт не зарегистрирован, вы хотите его зарегистрировать?</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in or register</string>
@@ -53,6 +53,7 @@
     <string name="invalid_password">Пароль не соответствует требованиям</string>
     <string name="action_read">Чтение</string>
     <string name="action_send_email">Отправить сообщение</string>
+    <string name="toast_create_text">Создан файл: </string>
     <string-array name="text_style">
         <item>Обычный</item>
         <item>Полужирный</item>

@@ -1,4 +1,4 @@
-package com.xkdev.editor.login;
+package com.xkdev.justtexteditor.login;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;

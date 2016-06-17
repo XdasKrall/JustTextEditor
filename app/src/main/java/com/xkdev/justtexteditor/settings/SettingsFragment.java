@@ -1,9 +1,9 @@
-package com.xkdev.editor.settings;
+package com.xkdev.justtexteditor.settings;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
-import com.xkdev.editor.R;
+import com.xkdev.justtexteditor.R;
 
 /**
  * Created by user on 03.04.2016.

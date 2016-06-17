@@ -1,4 +1,4 @@
-package com.xkdev.editor.login;
+package com.xkdev.justtexteditor.login;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
@@ -20,7 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.xkdev.editor.R;
+import com.xkdev.justtexteditor.R;
 
 import java.util.ArrayList;
 import java.util.List;

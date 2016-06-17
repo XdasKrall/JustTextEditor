@@ -1,8 +1,9 @@
-package com.xkdev.editor.util;
+package com.xkdev.justtexteditor.util;
 
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,8 @@ public class Util {
     //Метод для открытия файла в режиме редактирования
     public static void openFileEditSD(String filePath, Context context, EditText editText){
 
+        final String TAG = "MyLogs";
+
         if(!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
             return;
         }
@@ -38,13 +41,13 @@ public class Util {
             editText.setText(sBuilder.toString());
             bfReader.close();
 
-            Toast.makeText(context, "Открыто: " + filePath, Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Открыт файл : " + sdFile.getName());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+            Log.d(TAG, e.toString());
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+            Log.d(TAG, e.toString());
         }
     }
 }

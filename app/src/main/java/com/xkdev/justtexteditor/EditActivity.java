@@ -1,4 +1,4 @@
-package com.xkdev.editor;
+package com.xkdev.justtexteditor;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -25,9 +25,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xkdev.editor.settings.SettingsActivity;
-import com.xkdev.editor.util.Util;
-
+import com.xkdev.justtexteditor.settings.SettingsActivity;
+import com.xkdev.justtexteditor.util.Util;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -69,7 +68,7 @@ public class EditActivity extends AppCompatActivity {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.listDrawer:
                 menu.add(0, CONTEXT_MENU_REMOVE, 0, "Удалить");
                 break;
@@ -77,8 +76,9 @@ public class EditActivity extends AppCompatActivity {
                 break;
         }
     }
-//Метод для удаления файлов
-    private void removeFile(int position){
+
+    //Метод для удаления файлов
+    private void removeFile(int position) {
 
         //Получение пути к файлу, который надо удалить (по позиции в listDrawer)
         String filePath = filePaths[position].getAbsolutePath();
@@ -88,7 +88,7 @@ public class EditActivity extends AppCompatActivity {
         Log.d(TAG, "Файл: " + filePath + " удален - " + removed.toString());
         //Если удален файл, который открыт
         //Запись нового пути в глобальную переменную
-        if(mFilePath.equals(filePath)) {
+        if (mFilePath.equals(filePath)) {
             if (position > 0 && filePaths[position - 1] != null) {
                 mFilePath = filePaths[position - 1].getAbsolutePath();
             } else if (position > 0 && filePaths[position + 1] != null) {
@@ -98,24 +98,28 @@ public class EditActivity extends AppCompatActivity {
                 finish();
             }
         }
-        if(!exitFromRemove) {
+        if (!exitFromRemove) {
 
             //Если файлы есть,
             // обновление имен файлов в LayoutDrawer, Открытие другого файла, Изменение заголовка
             getFilesNames();
             Util.openFileEditSD(mFilePath, mContext, mEditText);
-            titleActBar = mFilePath;
-            getSupportActionBar().setTitle(titleActBar.replaceAll("/storage/emulated/0/Editor/MyFiles/", ""));
+            titleActBar = mFilePath.replaceAll("/storage/emulated/0/Editor/MyFiles/", "");
+            int pos = titleActBar.lastIndexOf(".");
+            if(pos > 0) {
+                titleActBar = titleActBar.substring(0, pos);
+            }
+            getSupportActionBar().setTitle(titleActBar);
         }
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        AdapterView.AdapterContextMenuInfo mi = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        AdapterView.AdapterContextMenuInfo mi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int position;
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case CONTEXT_MENU_REMOVE:
 
                 //Получение позиции, нажатого элемента listDrawer
@@ -160,21 +164,23 @@ public class EditActivity extends AppCompatActivity {
         //Получение пути к файлу из MainActivity
         mFilePath = getIntent().getStringExtra("filepath");
 
-        titleActBar = mFilePath;
-
-        getSupportActionBar().setTitle(titleActBar.replaceAll("/storage/emulated/0/Editor/MyFiles/", ""));
+        titleActBar = mFilePath.replaceAll("/storage/emulated/0/Editor/MyFiles/", "");
+        int pos = titleActBar.lastIndexOf(".");
+        if(pos > 0) {
+            titleActBar = titleActBar.substring(0, pos);
+        }
+        getSupportActionBar().setTitle(titleActBar);
         Log.d(TAG, "Filepath: " + mFilePath);
         //Открытие файла
         Util.openFileEditSD(mFilePath, mContext, mEditText);
 
         //Открытие файла в режиме чтения или редактирования,
-       // в зависимости от того, какой режим был при прошлом выходе
-        if(readMode){
+        // в зависимости от того, какой режим был при прошлом выходе
+        if (readMode) {
             mRead.setText(mEditText.getText().toString());
             mEditText.setVisibility(View.GONE);
             mRead.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             mRead.setVisibility(View.GONE);
             mEditText.setVisibility(View.VISIBLE);
             mEditText.setFocusable(true);
@@ -184,7 +190,7 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-         sp = PreferenceManager.getDefaultSharedPreferences(this);
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         //Смена размера шрифта
         float fSize = Float.parseFloat(sp.getString(getString(R.string.pref_size), "20"));
@@ -195,10 +201,10 @@ public class EditActivity extends AppCompatActivity {
         String regular = sp.getString(getString(R.string.pref_style), "");
         int typeface = Typeface.NORMAL;
 
-        if(regular.contains(getString(R.string.pref_style_bold))){
+        if (regular.contains(getString(R.string.pref_style_bold))) {
             typeface += Typeface.BOLD;
         }
-        if(regular.contains(getString(R.string.pref_style_italic))){
+        if (regular.contains(getString(R.string.pref_style_italic))) {
             typeface += Typeface.ITALIC;
         }
         mEditText.setTypeface(null, typeface);
@@ -208,16 +214,13 @@ public class EditActivity extends AppCompatActivity {
         String sColor = sp.getString(getString(R.string.pref_color), "");
         int textColor = Color.BLACK;
 
-        if(sColor.contains(getString(R.string.pref_color_black))){
+        if (sColor.contains(getString(R.string.pref_color_black))) {
             textColor = Color.BLACK;
-        }
-        else if(sColor.contains(getString(R.string.pref_color_blue))){
+        } else if (sColor.contains(getString(R.string.pref_color_blue))) {
             textColor = Color.BLUE;
-        }
-        else if(sColor.contains(getString(R.string.pref_color_green))){
+        } else if (sColor.contains(getString(R.string.pref_color_green))) {
             textColor = Color.GREEN;
-        }
-        else if(sColor.contains(getString(R.string.pref_color_red))){
+        } else if (sColor.contains(getString(R.string.pref_color_red))) {
             textColor = Color.RED;
         }
         mEditText.setTextColor(textColor);
@@ -234,18 +237,17 @@ public class EditActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_open:
                 openFileManager();
                 return true;
             case R.id.action_mode_read:     //Режим чтения
-                if(!readMode){
+                if (!readMode) {
                     mRead.setText(mEditText.getText().toString());
                     mEditText.setVisibility(View.GONE);
                     mRead.setVisibility(View.VISIBLE);
                     readMode = true;
-                }
-                else{
+                } else {
                     mRead.setVisibility(View.GONE);
                     mEditText.setVisibility(View.VISIBLE);
                     mEditText.setFocusable(true);
@@ -253,7 +255,7 @@ public class EditActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.action_save:      //Сохранение файла
-                if(mFilePath != null)
+                if (mFilePath != null)
                     writeFileSD(mFilePath);
                 return true;
             case R.id.action_create:     //Создание нового файла
@@ -269,22 +271,22 @@ public class EditActivity extends AppCompatActivity {
     }
 
     //Метод для записи файла на sdcard
-    public void writeFileSD(String filePath){
+    public void writeFileSD(String filePath) {
 
-        if(!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Log.d(TAG, "SD карта не доступна: " + Environment.getExternalStorageState());
             return;
         }
         File sdFile = new File(filePath);
 
-        try{
+        try {
             BufferedWriter bWriter = new BufferedWriter(new FileWriter(sdFile));
             bWriter.write(mEditText.getText().toString());
             bWriter.close();
-            Toast.makeText(mContext,"writeFileSD " + R.string.succes_write_SD + sdFile.getPath(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Файл " + sdFile.getName() + " успешно сохранен", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this,"writeFileSD " + R.string.error_write_SD + e.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.error_write_SD + e.toString(), Toast.LENGTH_SHORT).show();
         }
         //Обновление информации в listDrawer
         getFilesNames();
@@ -296,7 +298,7 @@ public class EditActivity extends AppCompatActivity {
         sp = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
         ed.putBoolean("read mode", readMode);
-        ed.commit();
+        ed.apply();
         Log.d(TAG, "onDestroy: " + readMode);
         super.onDestroy();
 
@@ -307,12 +309,12 @@ public class EditActivity extends AppCompatActivity {
         super.onPause();
         //Сохранение файла, при сворачивании/закрытии приложения
         //Если файлов не осталось и был удален последний, без сохранения
-        if(!exitFromRemove)
-        writeFileSD(mFilePath);
+        if (!exitFromRemove)
+            writeFileSD(mFilePath);
     }
 
     //Метод для создания нового файла
-    public void createFileSD(){
+    public void createFileSD() {
         mETFileName = new EditText(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.create_text_file);
@@ -321,12 +323,12 @@ public class EditActivity extends AppCompatActivity {
         builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                return;
             }
         });
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 if (mETFileName != null) {
                     String fileName = mETFileName.getText().toString() + ".txt";
                     File sdPath = Environment.getExternalStorageDirectory();
@@ -334,11 +336,10 @@ public class EditActivity extends AppCompatActivity {
                     sdPath.mkdirs();
                     writeEmptyFileSD(sdPath + "/" + fileName);
                 }
+
                 //Если имя файла не введено, рекурсивный вызов
                 else {
-                    Toast
-                            .makeText(getApplicationContext(),"Alert Dialog " + R.string.create_text_file, Toast.LENGTH_SHORT)
-                            .show();
+
                     createFileSD();
                 }
             }
@@ -348,48 +349,45 @@ public class EditActivity extends AppCompatActivity {
     }
 
     //Метод для открытия файлового менеджера
-    public void openFileManager()
-    {
+    public void openFileManager() {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_GET_CONTENT);
         intent.setType("file/*");
         startActivityForResult(intent, PICK_FILE_CODE);
 
     }
+
     //Метод для обработки выбора файла
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode== PICK_FILE_CODE){
-            if(data!=null){
+        if (requestCode == PICK_FILE_CODE) {
+            if (data != null) {
                 mFilePath = data.getData().getPath();
                 Util.openFileEditSD(mFilePath, mContext, mEditText);
-            }
-            else return;
-        }
-        else
+            } else return;
+        } else
             return;
-        if(resultCode == RESULT_CANCELED){
-            return;
+        if (resultCode == RESULT_CANCELED) {
         }
     }
 
-//Метод для создания пустого файла на sdcard
-    public void writeEmptyFileSD(String filePath){
-        if(!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+    //Метод для создания пустого файла на sdcard
+    public void writeEmptyFileSD(String filePath) {
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Log.d(TAG, getString(R.string.sd_not_available) + Environment.getExternalStorageState());
             return;
         }
         File sdFile = new File(filePath);
 
-        try{
+        try {
             BufferedWriter bWriter = new BufferedWriter(new FileWriter(sdFile));
             bWriter.write("");
             bWriter.close();
-            Toast.makeText(getApplicationContext(),"writeEmptyFileSD " + R.string.succes_write_SD + sdFile.getPath(), Toast.LENGTH_SHORT).show();
+            Log.d(TAG, R.string.toast_create_text + sdFile.getName());
 
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, "writeEmptyFileSD " + R.string.error_write_SD + e.toString(), Toast.LENGTH_SHORT).show();
+            Log.d(TAG, R.string.error_write_SD + e.toString());
         }
 
         getFilesNames();
@@ -397,37 +395,53 @@ public class EditActivity extends AppCompatActivity {
         mFilePath = filePath;
         Util.openFileEditSD(mFilePath, mContext, mEditText);
 
-        titleActBar = filePath;
-        getSupportActionBar().setTitle(titleActBar.replaceAll("/storage/emulated/0/Editor/MyFiles/", ""));
+        titleActBar = sdFile.getName();
+        int pos = titleActBar.lastIndexOf(".");
+        if(pos > 0) {
+            titleActBar = titleActBar.substring(0, pos);
+        }
+        getSupportActionBar().setTitle(titleActBar);
     }
-//Метод для получения имен файлов и вывода их в listDrawer
+
+    //Метод для получения имен файлов и вывода их в listDrawer
     private void getFilesNames() {
         //Получение списка файлов в директории
         File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + DIR_SD);
         filePaths = file.listFiles();
 
 
-            fileNames = new String[filePaths.length];
-//Наполнение массива именами файлов
-            for (int i = 0; i < filePaths.length; i++) {
+        fileNames = new String[filePaths.length];
+        //Наполнение массива именами файлов
+        for (int i = 0; i < filePaths.length; i++) {
 
-                fileNames[i] = filePaths[i].getName();
+            fileNames[i] = filePaths[i].getName();
+            int pos = fileNames[i].lastIndexOf(".");
+            if (pos > 0) {
+                fileNames[i] = fileNames[i].substring(0, pos);
             }
+        }
 
-            //Обновление имен файлов в адаптере
-            listDrawer.setAdapter(new ArrayAdapter<>(mContext, R.layout.drawer_list_item, fileNames));
+        //Обновление имен файлов в адаптере
+        listDrawer.setAdapter(new ArrayAdapter<>(mContext, R.layout.drawer_list_item, fileNames));
 
     }
-//Обработка нажатий на элементы listDrawer
-    private class DrawerItemClickListener implements ListView.OnItemClickListener{
+
+    //Обработка нажатий на элементы listDrawer
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             writeFileSD(mFilePath);
             mFilePath = filePaths[position].getPath();
             Util.openFileEditSD(filePaths[position].getPath(), mContext, mEditText);
-            getSupportActionBar().setTitle(filePaths[position].getName());
-            drawerLayout.closeDrawer(listDrawer);
-            Log.d(TAG, "OnItemClickListener");
+
+            int pos = fileNames[position].lastIndexOf(".");
+            if (pos > 0) {
+                fileNames[position] = fileNames[position].substring(0, pos);
+            }
+                getSupportActionBar().setTitle(fileNames[position]);
+                drawerLayout.closeDrawer(listDrawer);
+                Log.d(TAG, "OnItemClickListener");
+
         }
     }
 }

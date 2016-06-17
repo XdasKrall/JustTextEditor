@@ -1,27 +1,21 @@
-package com.xkdev.editor;
+package com.xkdev.justtexteditor;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-/**
- * Created by user on 06.04.2016.
- */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String DIR_SD = "Editor/MyFiles";//Каталог, где будут храниться все созданные файлы
@@ -49,12 +43,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnExit.setOnClickListener(this);
 
         btnSendEmail = (Button) findViewById(R.id.btnSendEmail);
-        btnSendEmail.setOnClickListener(this);
+        if (btnSendEmail != null) {
+            btnSendEmail.setOnClickListener(this);
+        }
 
 
         intent = new Intent();
     }
-
 
     @Override
     public void onClick(View v) {
@@ -67,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 openFileManager();
                 Log.d(TAG, "onClickOpen");
                     intent.setClass(this, EditActivity.class);
-
                 break;
             case R.id.btnExit:
                 this.finish();
@@ -89,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                return;
             }
         });
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -112,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         builder.show();
     }
+
     //Метод для записи файла на sd card
     public void writeEmptyFileSD(String filePath){
         if(!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
@@ -124,15 +118,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             BufferedWriter bWriter = new BufferedWriter(new FileWriter(sdFile));
             bWriter.write("");
             bWriter.close();
-            Toast.makeText(getApplicationContext(), R.string.succes_write_SD + sdFile.getPath(), Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Файл " + sdFile.getName() + " - создан");
             intent.setClass(this, EditActivity.class);
             intent.putExtra("filepath", filePath);
             startActivity(intent);
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, R.string.error_write_SD + e.toString(), Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Извините, файл не создался:(" + e.toString());
         }
     }
+
     //Метод для открытия файлового менеджера
     public void openFileManager()
     {
@@ -141,7 +136,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent.setType("file/*");
         startActivityForResult(intent, PICK_FILE_CODE);
     }
-//Открытие экрана редактирования при выборе файла, в файловом менеджере (txt)
+
+    //Открытие экрана редактирования при выборе файла, в файловом менеджере (txt)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode== PICK_FILE_CODE){

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.xkdev.editor">
+    package="com.xkdev.justtexteditor">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -13,18 +13,18 @@
 
         <provider
             android:authorities="MyDB"
-            android:name=".login.LoginProvider"/>
-<activity android:name=".MainActivity">
+            android:name="com.xkdev.justtexteditor.login.LoginProvider"/>
+<activity android:name="com.xkdev.justtexteditor.MainActivity">
     <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
     </intent-filter>
 </activity>
-        <activity android:name=".EditActivity"/>
-        <activity android:name=".login.LoginActivity"/>
-        <activity android:name=".settings.SettingsActivity"
+        <activity android:name="com.xkdev.justtexteditor.EditActivity"/>
+        <activity android:name="com.xkdev.justtexteditor.login.LoginActivity"/>
+        <activity android:name="com.xkdev.justtexteditor.settings.SettingsActivity"
             android:label="@string/app_name"/>
-        <activity android:name=".SendEmailActivity"/>
+        <activity android:name="com.xkdev.justtexteditor.SendEmailActivity"/>
     </application>
 
 </manifest>
