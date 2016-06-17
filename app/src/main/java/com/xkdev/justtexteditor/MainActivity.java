@@ -92,8 +92,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String fileName = mETFileName.getText().toString() + ".txt";
                     File sdPath = Environment.getExternalStorageDirectory();
                     sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
-                    sdPath.mkdirs();
-                    writeEmptyFileSD(sdPath + "/" + fileName);
+                    boolean isDirectoryCreated = sdPath.exists();
+                    if(!isDirectoryCreated) {
+                        isDirectoryCreated = sdPath.mkdirs();
+                    }
+                    if(isDirectoryCreated) {
+                        writeEmptyFileSD(sdPath + "/" + fileName);
+                    }
                 } else {
                     Toast
                             .makeText(getApplicationContext(), R.string.create_text_file, Toast.LENGTH_SHORT)
@@ -145,12 +150,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent.putExtra("filepath", data.getData().getPath());
                 startActivity(intent);
             }
-            else return;
-        }
-        else
-            return;
-        if(resultCode == RESULT_CANCELED){
-            return;
         }
     }
 }

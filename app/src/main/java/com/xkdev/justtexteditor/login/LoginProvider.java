@@ -9,12 +9,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-/**
- * Created by dfomichev on 08.04.2016.
- */
 public class LoginProvider extends ContentProvider {
     //Параметры БД
     private static final String DB_NAME = "users";
@@ -32,8 +30,8 @@ public class LoginProvider extends ContentProvider {
     static final String PATH = "users";
     static final Uri CONTENT_URI = Uri.parse("content://"+AUTHORITY+"/"+PATH);
 
-    static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd" + AUTHORITY + "." + PATH;
-    static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd" + AUTHORITY + "." + PATH;
+   // static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd" + AUTHORITY + "." + PATH;
+   // static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd" + AUTHORITY + "." + PATH;
 
     static final int URI_USERS = 1;//Список пользователей
     static final int URI_USER_ID = 2;//Конкретный пользователь
@@ -55,32 +53,32 @@ public class LoginProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteDatabase sql = dbHelper.getReadableDatabase();
         return sql.query(DB_NAME, null, selection, null, null, null, null);
     }
 
     @Nullable
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         return null;
     }
 
     @Nullable
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
         SQLiteDatabase sql = dbHelper.getWritableDatabase();
        long rowID =  sql.insert(DB_NAME, null, values);
         return ContentUris.withAppendedId(CONTENT_URI, rowID);
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         return 0;
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
     }
 
@@ -91,10 +89,6 @@ public class LoginProvider extends ContentProvider {
 
     public DBHelper(Context context){
         super(context, "MyDB", null, DB_VERSION);
-    }
-
-    public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
     }
 
     @Override

@@ -32,9 +32,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-/**
- * Created by user on 06.04.2016.
- */
 public class EditActivity extends AppCompatActivity {
 
     private final static String DIR_SD = "Editor/MyFiles"; //Каталог, где будут храниться все созданные файлы
@@ -44,7 +41,6 @@ public class EditActivity extends AppCompatActivity {
     final static int CONTEXT_MENU_REMOVE = 101;//Id пункта удаления в контекстном меню
 
     String mFilePath;//Глобальная переменная пути к файлу
-    String titleActBar;//Заголовок ActionBar
 
     EditText mETFileName;//Ввод имени, при создании нового файла
     TextView mRead;//Отображение в режиме чтения
@@ -103,13 +99,10 @@ public class EditActivity extends AppCompatActivity {
             //Если файлы есть,
             // обновление имен файлов в LayoutDrawer, Открытие другого файла, Изменение заголовка
             getFilesNames();
-            Util.openFileEditSD(mFilePath, mContext, mEditText);
-            titleActBar = mFilePath.replaceAll("/storage/emulated/0/Editor/MyFiles/", "");
-            int pos = titleActBar.lastIndexOf(".");
-            if(pos > 0) {
-                titleActBar = titleActBar.substring(0, pos);
+            Util.openFileEditSD(mFilePath, mEditText);
+            if(getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(Util.setTitleToActionBar(mFilePath));
             }
-            getSupportActionBar().setTitle(titleActBar);
         }
     }
 
@@ -164,15 +157,12 @@ public class EditActivity extends AppCompatActivity {
         //Получение пути к файлу из MainActivity
         mFilePath = getIntent().getStringExtra("filepath");
 
-        titleActBar = mFilePath.replaceAll("/storage/emulated/0/Editor/MyFiles/", "");
-        int pos = titleActBar.lastIndexOf(".");
-        if(pos > 0) {
-            titleActBar = titleActBar.substring(0, pos);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(Util.setTitleToActionBar(mFilePath));
         }
-        getSupportActionBar().setTitle(titleActBar);
         Log.d(TAG, "Filepath: " + mFilePath);
         //Открытие файла
-        Util.openFileEditSD(mFilePath, mContext, mEditText);
+        Util.openFileEditSD(mFilePath, mEditText);
 
         //Открытие файла в режиме чтения или редактирования,
         // в зависимости от того, какой режим был при прошлом выходе
@@ -333,8 +323,13 @@ public class EditActivity extends AppCompatActivity {
                     String fileName = mETFileName.getText().toString() + ".txt";
                     File sdPath = Environment.getExternalStorageDirectory();
                     sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
-                    sdPath.mkdirs();
-                    writeEmptyFileSD(sdPath + "/" + fileName);
+                    boolean isDirectoryCreated = sdPath.exists();
+                    if(!isDirectoryCreated) {
+                      isDirectoryCreated = sdPath.mkdirs();
+                    }
+                    if(isDirectoryCreated) {
+                        writeEmptyFileSD(sdPath + "/" + fileName);
+                    }
                 }
 
                 //Если имя файла не введено, рекурсивный вызов
@@ -363,11 +358,8 @@ public class EditActivity extends AppCompatActivity {
         if (requestCode == PICK_FILE_CODE) {
             if (data != null) {
                 mFilePath = data.getData().getPath();
-                Util.openFileEditSD(mFilePath, mContext, mEditText);
-            } else return;
-        } else
-            return;
-        if (resultCode == RESULT_CANCELED) {
+                Util.openFileEditSD(mFilePath, mEditText);
+            }
         }
     }
 
@@ -393,14 +385,11 @@ public class EditActivity extends AppCompatActivity {
         getFilesNames();
         //Открытие нового пустого файла
         mFilePath = filePath;
-        Util.openFileEditSD(mFilePath, mContext, mEditText);
+        Util.openFileEditSD(mFilePath, mEditText);
 
-        titleActBar = sdFile.getName();
-        int pos = titleActBar.lastIndexOf(".");
-        if(pos > 0) {
-            titleActBar = titleActBar.substring(0, pos);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(Util.setTitleToActionBar(mFilePath));
         }
-        getSupportActionBar().setTitle(titleActBar);
     }
 
     //Метод для получения имен файлов и вывода их в listDrawer
@@ -432,13 +421,11 @@ public class EditActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             writeFileSD(mFilePath);
             mFilePath = filePaths[position].getPath();
-            Util.openFileEditSD(filePaths[position].getPath(), mContext, mEditText);
+            Util.openFileEditSD(filePaths[position].getPath(), mEditText);
 
-            int pos = fileNames[position].lastIndexOf(".");
-            if (pos > 0) {
-                fileNames[position] = fileNames[position].substring(0, pos);
+            if(getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(Util.setTitleToActionBar(mFilePath));
             }
-                getSupportActionBar().setTitle(fileNames[position]);
                 drawerLayout.closeDrawer(listDrawer);
                 Log.d(TAG, "OnItemClickListener");
 

@@ -3,9 +3,6 @@ package com.xkdev.justtexteditor.settings;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-/**
- * Created by user on 03.04.2016.
- */
 public class SettingsActivity extends PreferenceActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {

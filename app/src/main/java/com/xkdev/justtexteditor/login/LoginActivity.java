@@ -25,10 +25,6 @@ import com.xkdev.justtexteditor.R;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * Created by dfomichev on 08.04.2016.
- */
 public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     //Uri Провайдера
@@ -55,12 +51,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         mPassword = (EditText) findViewById(R.id.etPassword);
         Button btnSignIn = (Button) findViewById(R.id.btnSignIn);
         //Отправка введенных данных на проверку корретности ввода
-        btnSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginAttempt();
-            }
-        });
+        if (btnSignIn != null) {
+            btnSignIn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    loginAttempt();
+                }
+            });
+        }
     }
 
     private boolean passwordIsValid(String password){
@@ -110,7 +108,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     }
 //Автозаполнение формы для почты, при вводе первых символов
     private void addEmailsToAutoComplete(List<String> emails) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, emails);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, emails);
         mEmailView.setAdapter(adapter);
 
     }
@@ -176,11 +174,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             inCorrectPassword = false;
             Cursor cursor = getContentResolver().query(URI_CONTENT, null,
                     "email = '"
-                            + mEmail + "'", null, null);;
+                            + mEmail + "'", null, null);
             if(cursor != null && cursor.moveToFirst()){
 
                 if(mPassword.equals(cursor.getString(1))){
 
+                    cursor.close();
                     return true;
             }
                 else {
